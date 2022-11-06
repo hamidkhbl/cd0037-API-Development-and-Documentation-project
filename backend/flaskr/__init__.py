@@ -1,8 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
-import random
+from flask_cors import CORS, cross_origin
 
 from models import setup_db, Question, Category
 
@@ -16,10 +15,16 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
-
+    cors = CORS(app, resources={r'/*':{'origins':'*'}})
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     """
     @TODO:
@@ -55,8 +60,8 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['GET'])
     def get_questions():
         page = request.args.get('page',default = 1, type=int)
-        start = (page - 1) * 10
-        end = start + 10
+        start = (page - 1) * QUESTIONS_PER_PAGE
+        end = start + QUESTIONS_PER_PAGE
         
         try:
             questions =[q.format() for q in Question.query.all()]
