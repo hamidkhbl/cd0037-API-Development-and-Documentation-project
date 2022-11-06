@@ -49,8 +49,8 @@ class Question(db.Model):
         db.session.delete(self)
         db.session.commit()
     
-        def search_by_question(search_phrase):
-            return Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))
+    def search_by_question(search_phrase):
+        return [q.format() for q in Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))]
 
     def format(self):
         return {
