@@ -52,6 +52,8 @@ class Question(db.Model):
     def search_by_question(search_phrase):
         return [q.format() for q in Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))]
 
+    def get_new_question(old_question_ids):
+        return Question.query.filter(~Question.id.in_(old_question_ids)).first().format()
     def format(self):
         return {
             'id': self.id,
