@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine
+from sqlalchemy import Column, String, Integer, create_engine, func
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -48,6 +48,9 @@ class Question(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+    
+        def search_by_question(search_phrase):
+            return Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))
 
     def format(self):
         return {
