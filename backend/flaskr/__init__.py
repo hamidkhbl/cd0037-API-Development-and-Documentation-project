@@ -153,14 +153,17 @@ def create_app(test_config=None):
     @app.route('/quizzes', methods=['POST'])
     def quizzes():
         pre_question_ids = request.json.get('previous_questions')
-        print(pre_question_ids)
-        if len(pre_question_ids) < len(Question.query.all()):
-            new_question = Question.get_new_question(pre_question_ids)
+        quiz_category = request.json.get('quiz_category').get('id')
+        category_count = len(Question.query.all()) if quiz_category == 0 else len(Question.query.filter_by(category_id = quiz_category).all())
+        if len(pre_question_ids) < category_count:
+            new_question = Question.get_new_question(pre_question_ids, quiz_category)
             return jsonify({
                 "question": new_question
             })
         else:
-            abort(404)
+            return jsonify({
+                "forceEnd": True
+            })
     """
     @TODO:
     Create error handlers for all expected errors
