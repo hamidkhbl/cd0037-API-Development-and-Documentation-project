@@ -26,7 +26,17 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests
     for all available categories.
     """
-
+    @app.route('/categories', methods=['GET'])
+    def get_categories():
+        try:
+            categories = {}
+            for c in Category.query.all():
+                categories[c.id] = c.type
+            return jsonify({
+                'categories':categories
+            })
+        except Exception as e:
+            print(e)
 
     """
     @TODO:
@@ -40,7 +50,21 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
-
+    @app.route('/questions', methods=['GET'])
+    def get_questions():
+        try:
+            questions =[q.format() for q in Question.query.all()]
+            categories = {}
+            for c in Category.query.all():
+                categories[c.id] = c.type
+            return jsonify({
+                'questions': questions,
+                'totalQuestions': len(questions),
+                'categories':categories,
+                'currentCategory': "Sports"
+            })
+        except Exception as e:
+            print(e)
     """
     @TODO:
     Create an endpoint to DELETE question using a question ID.
@@ -48,7 +72,14 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
-
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_questions(question_id):
+        question = Question.query.filter_by(id = question_id).one()
+        print(question_id)
+        question.delete()
+        return jsonify({
+            'success': True
+        })
     """
     @TODO:
     Create an endpoint to POST a new question,
@@ -59,6 +90,15 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/questions', methods=['POST'])
+    def add_question():
+        data = request.json
+        print(data.get('category'))
+        question = Question(data.get('question'), data.get('answer'), data.get('category'), data.get('difficulty'))
+        question.insert()
+        return jsonify({
+            'success': True
+        })
 
     """
     @TODO:
@@ -70,6 +110,16 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+    @app.route('/questions/search', methods=['POST'])
+    def search():
+        searchTerm = request.json.get('searchTerm')
+        
+        questions = Question.search_by_question(searchTerm)
+        return jsonify({
+            'questions': questions,
+            'totalQuestions': len(questions),
+            'currentCategory':'Sport'
+        })
 
     """
     @TODO:
@@ -79,7 +129,16 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-
+    @app.route('/categories/<int:category_id>/questions')
+    def get_question_by_category(category_id):
+        questions = [q.format() for q in Question.query.filter_by(category_id = category_id)]
+        print(questions)
+        return jsonify({
+            'questions': questions,
+            'totalQuestions': len(questions),
+            'currentCategory': "Sports"
+        })
+        
     """
     @TODO:
     Create a POST endpoint to get questions to play the quiz.
@@ -91,7 +150,17 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-
+    @app.route('/quizzes', methods=['POST'])
+    def quizzes():
+        pre_question_ids = request.json.get('previous_questions')
+        print(pre_question_ids)
+        if len(pre_question_ids) < len(Question.query.all()):
+            new_question = Question.get_new_question(pre_question_ids)
+            return jsonify({
+                "question": new_question
+            })
+        else:
+            abort(404)
     """
     @TODO:
     Create error handlers for all expected errors
