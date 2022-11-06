@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine, func
+from sqlalchemy import Column, String, Integer, create_engine, func, and_, or_
 from flask_sqlalchemy import SQLAlchemy
 import json
 
@@ -52,8 +52,12 @@ class Question(db.Model):
     def search_by_question(search_phrase):
         return [q.format() for q in Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))]
 
-    def get_new_question(old_question_ids):
-        return Question.query.filter(~Question.id.in_(old_question_ids)).first().format()
+    def get_new_question(old_question_ids, category_id):
+        if category_id == 0:
+            return Question.query.filter(~Question.id.in_(old_question_ids)).first().format()
+        else:
+            return Question.query.filter(and_(~Question.id.in_(old_question_ids), Question.category_id == category_id)).first().format()
+        
     def format(self):
         return {
             'id': self.id,
