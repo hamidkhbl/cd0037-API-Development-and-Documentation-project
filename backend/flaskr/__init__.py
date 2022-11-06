@@ -57,7 +57,6 @@ def create_app(test_config=None):
         page = request.args.get('page',default = 1, type=int)
         start = (page - 1) * 10
         end = start + 10
-        print(page)
         
         try:
             questions =[q.format() for q in Question.query.all()]
@@ -85,7 +84,6 @@ def create_app(test_config=None):
     def delete_questions(question_id):
         try:
             question = Question.query.filter_by(id = question_id).one()
-            print(question_id)
             question.delete()
             return jsonify({
                 'success': True
@@ -107,7 +105,6 @@ def create_app(test_config=None):
     def add_question():
         try:
             data = request.json
-            print(data.get('category'))
             question = Question(data.get('question'), data.get('answer'), data.get('category'), data.get('difficulty'))
             question.insert()
             return jsonify({
@@ -156,12 +153,10 @@ def create_app(test_config=None):
             category = Category.query.filter_by(id = category_id).one_or_none()
         except:
             abort(500)
-        print(category)
         if category is None:
             abort(404)
         try:
             questions = [q.format() for q in Question.query.filter_by(category_id = category_id)]
-            print(questions)
             return jsonify({
                 "success": True, 
                 'questions': questions,
