@@ -31,19 +31,34 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests
     for all available categories.
     """
-    @app.route('/categories', methods=['GET'])
+    @app.route('/categories', methods=['GET', 'POST'])
     def get_categories():
-        try:
-            categories = {}
-            for c in Category.query.all():
-                categories[c.id] = c.type
-            return jsonify({
-                "success": True, 
-                'categories':categories
-            })
-        except Exception as e:
-            print(e)
-            abort(500)
+        if request.method == 'GET':
+            try:
+                categories = {}
+                for c in Category.query.all():
+                    categories[c.id] = c.type
+                return jsonify({
+                    "success": True, 
+                    'categories':categories
+                })
+            except Exception as e:
+                print(e)
+                abort(500)
+        elif request.method == 'POST':
+            try:
+                category_type = request.json.get('type')
+                category = Category(type=category_type)
+                category.insert()
+                
+                return jsonify({
+                    'success': True
+                })
+            except Exception as e:
+                print(e)
+                abort(500)
+        else:
+            abort(405)
 
     """
     @TODO:
@@ -213,6 +228,14 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Resource not found."
             }), 404
+        
+    @app.errorhandler(405)
+    def not_found(error):
+        return jsonify({
+            "success": False, 
+            "error": 405,
+            "message": "Method not allowed."
+            }), 405
 
     @app.errorhandler(422)
     def not_found(error):
