@@ -207,6 +207,7 @@ def create_app(test_config=None):
             if len(pre_question_ids) < category_count:
                 new_question = Question.get_new_question(pre_question_ids, quiz_category)
                 return jsonify({
+                    'success': True,
                     "question": new_question
                 })
             else:
