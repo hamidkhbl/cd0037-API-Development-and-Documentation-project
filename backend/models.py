@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, Integer, create_engine, func, and_, or_
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-database_name = 'trivia1'
+database_name = 'trivia2'
 database_path = 'postgresql://{}/{}'.format('localhost:5432', database_name)
 
 db = SQLAlchemy()
@@ -29,13 +29,13 @@ class Question(db.Model):
     id = Column(Integer, primary_key=True)
     question = Column(String, nullable = False)
     answer = Column(String, nullable = False)
-    category_id = Column(Integer)
+    category = Column(Integer)
     difficulty = Column(Integer)
 
     def __init__(self, question, answer, category, difficulty):
         self.question = question
         self.answer = answer
-        self.category_id = category
+        self.category = category
         self.difficulty = difficulty
 
     def insert(self):
@@ -52,18 +52,18 @@ class Question(db.Model):
     def search_by_question(search_phrase):
         return [q.format() for q in Question.query.filter(func.lower(Question.question).contains(search_phrase.lower()))]
 
-    def get_new_question(old_question_ids, category_id):
-        if category_id == 0:
+    def get_new_question(old_question_ids, category):
+        if category == 0:
             return Question.query.filter(~Question.id.in_(old_question_ids)).first().format()
         else:
-            return Question.query.filter(and_(~Question.id.in_(old_question_ids), Question.category_id == category_id)).first().format()
+            return Question.query.filter(and_(~Question.id.in_(old_question_ids), Question.category == category)).first().format()
         
     def format(self):
         return {
             'id': self.id,
             'question': self.question,
             'answer': self.answer,
-            'category': self.category_id,
+            'category': self.category,
             'difficulty': self.difficulty
             }
 

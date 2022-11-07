@@ -167,16 +167,16 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-    @app.route('/categories/<int:category_id>/questions')
-    def get_question_by_category(category_id):
+    @app.route('/categories/<int:category>/questions')
+    def get_question_by_category(category):
         try:
-            category = Category.query.filter_by(id = category_id).one_or_none()
+            category = Category.query.filter_by(id = category).one_or_none()
         except:
             abort(500)
         if category is None:
             abort(404)
         try:
-            questions = [q.format() for q in Question.query.filter_by(category_id = category_id)]
+            questions = [q.format() for q in Question.query.filter_by(category = category)]
             return jsonify({
                 "success": True, 
                 'questions': questions,
@@ -203,7 +203,7 @@ def create_app(test_config=None):
         try:
             pre_question_ids = request.json.get('previous_questions')
             quiz_category = request.json.get('quiz_category').get('id')
-            category_count = len(Question.query.all()) if quiz_category == 0 else len(Question.query.filter_by(category_id = quiz_category).all())
+            category_count = len(Question.query.all()) if quiz_category == 0 else len(Question.query.filter_by(category = quiz_category).all())
             if len(pre_question_ids) < category_count:
                 new_question = Question.get_new_question(pre_question_ids, quiz_category)
                 return jsonify({
