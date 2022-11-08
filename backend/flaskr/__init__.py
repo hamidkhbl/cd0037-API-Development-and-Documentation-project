@@ -108,7 +108,8 @@ def create_app(test_config=None):
             question = Question.query.filter_by(id=question_id).one()
             question.delete()
             return jsonify({
-                'success': True
+                'success': True,
+                'id': question.id
             })
         except Exception as e:
             abort(500)
