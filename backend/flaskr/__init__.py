@@ -176,7 +176,7 @@ def create_app(test_config=None):
         if category is None:
             abort(404)
         try:
-            questions = [q.format() for q in Question.query.filter_by(category = category)]
+            questions = [q.format() for q in Question.query.filter_by(category = category.id)]
             return jsonify({
                 "success": True, 
                 'questions': questions,
