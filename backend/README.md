@@ -71,6 +71,189 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 You will need to provide detailed documentation of your API endpoints including the URL, request parameters, and the response body. Use the example below as a reference.
 
+### Documentation
+
+`GET /categories`
+
+This API returns list of all the categories. Here is an example of the response.
+```json
+{
+    "categories": {
+        "1": "Sports",
+        "2": "Art"
+    },
+    "success": true
+}
+```
+
+
+`GET /questions`
+
+This API returns list of all the questions.
+```json
+{
+    "categories": {
+        "1": "Sports",
+        "2": "Art"
+    },
+    "currentCategory": "Sports",
+    "questions": [
+        {
+            "answer": "test",
+            "category": 1,
+            "difficulty": 1,
+            "id": 1,
+            "question": "test"
+        },
+        {
+            "answer": "Art answer",
+            "category": 2,
+            "difficulty": 1,
+            "id": 4,
+            "question": "Art question"
+        }
+    ],
+    "success": true,
+    "totalQuestions": 2
+}
+```
+
+`POST /questions`
+
+Using this API you can add a quesion. The payload should look like this.
+```json
+{
+    "question":"a new question",
+    "answer": "a new answer",
+    "category": 1,
+    "difficulty": 5
+}
+```
+The respose includes the id of the added question.
+```json
+{
+    "id": 12,
+    "success": true
+}
+```
+
+`DELETE /questions/<int:question_id>`
+This API deletes a question by id. The response looks like this:
+```json
+{
+    "id": 12,
+    "success": true
+}
+```
+
+`POST /questions/search`
+This API searches questions and returns a set of results.
+The paylod should look like this:
+```json
+{
+    "searchTerm":"test"
+}
+```
+Here is a sample response
+```json
+{
+    "currentCategory": "Sport",
+    "questions": [
+        {
+            "answer": "test",
+            "category": 1,
+            "difficulty": 1,
+            "id": 1,
+            "question": "test"
+        },
+        {
+            "answer": "test2",
+            "category": 1,
+            "difficulty": 1,
+            "id": 3,
+            "question": "test2"
+        }
+    ],
+    "success": true,
+    "totalQuestions": 2
+}
+```
+
+`GET /categories/<int:category>/questions`
+This endpoint returns all the questions of a category
+```json
+{
+    "currentCategory": "Sports",
+    "questions": [
+        {
+            "answer": "test",
+            "category": 1,
+            "difficulty": 1,
+            "id": 1,
+            "question": "test"
+        },
+        {
+            "answer": "test2",
+            "category": 1,
+            "difficulty": 1,
+            "id": 3,
+            "question": "test2"
+        },
+        {
+            "answer": "first answer",
+            "category": 1,
+            "difficulty": 1,
+            "id": 10,
+            "question": "first Hamid"
+        },
+        {
+            "answer": "a new answer",
+            "category": 1,
+            "difficulty": 5,
+            "id": 11,
+            "question": "a new question"
+        }
+    ],
+    "success": true,
+    "totalQuestions": 4
+}
+```
+
+`POST /quizzes`
+This API returns a question that the id is not included in the previous_questions array. The following payload will return a question from the Art category with id other than 1 or 3.
+```json
+{
+    "previous_questions": [
+        1,
+        3
+    ],
+    "quiz_category": {
+        "type": "Art",
+        "id": 2
+    }
+}
+```
+The response for such request will look like this.
+```json
+{
+    "question": {
+        "answer": "Art answer",
+        "category": 2,
+        "difficulty": 1,
+        "id": 4,
+        "question": "Art question"
+    },
+    "success": true
+}
+```
+In case all the questions were answered and no question is remaining the response looks like the following to let the UI know that there is no question left.
+
+```json
+{
+    "forceEnd": true
+}
+```
+
 ### Documentation Example
 
 `GET '/api/v1.0/categories'`
