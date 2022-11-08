@@ -47,7 +47,6 @@ def create_app(test_config=None):
                     'categories': categories
                 })
             except Exception as e:
-                print(e)
                 abort(500)
         elif request.method == 'POST':
             try:
@@ -58,7 +57,6 @@ def create_app(test_config=None):
                     'success': True
                 })
             except Exception as e:
-                print(e)
                 abort(500)
         else:
             abort(405)
@@ -94,7 +92,6 @@ def create_app(test_config=None):
                 'currentCategory': "Sports"
             })
         except Exception as e:
-            print(e)
             abort(500)
     """
     @TODO:
@@ -114,7 +111,6 @@ def create_app(test_config=None):
                 'success': True
             })
         except Exception as e:
-            print(e)
             abort(500)
     """
     @TODO:
@@ -138,7 +134,6 @@ def create_app(test_config=None):
                 'success': True
             })
         except Exception as e:
-            print(e)
             abort(500)
 
     """
@@ -163,7 +158,6 @@ def create_app(test_config=None):
                 'currentCategory': 'Sport'
             })
         except Exception as e:
-            print(e)
             abort(500)
 
     """
@@ -179,7 +173,6 @@ def create_app(test_config=None):
         try:
             category = Category.query.filter_by(id=category).one_or_none()
         except Exception as e:
-            print(e)
             abort(500)
         if category is None:
             abort(404)
@@ -193,7 +186,6 @@ def create_app(test_config=None):
                 'currentCategory': "Sports"
             })
         except Exception as e:
-            print(e)
             abort(500)
 
     """
@@ -228,7 +220,6 @@ def create_app(test_config=None):
                     "forceEnd": True
                 })
         except Exception as e:
-            print(e)
             abort(500)
 
     """
