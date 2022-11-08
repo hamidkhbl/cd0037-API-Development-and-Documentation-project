@@ -132,7 +132,8 @@ def create_app(test_config=None):
                                 data.get('category'), data.get('difficulty'))
             question.insert()
             return jsonify({
-                'success': True
+                'success': True,
+                'id': question.id
             })
         except Exception as e:
             abort(500)
